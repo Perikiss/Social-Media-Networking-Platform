@@ -1,29 +1,43 @@
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class SocialNetwork {
     private ArrayList<Profile> profiles = new ArrayList<>();
     private ArrayList<Post> posts = new ArrayList<>();
 
-    public void addProfile(Profile profile) {
-        profiles.add(profile);
+    public void addProfile(Profile p) {
+        profiles.add(p);
     }
 
-    public void addPost(Post post) {
-        posts.add(post);
+    public void addPost(Post p) {
+        posts.add(p);
+    }
+
+    public Profile findProfile(String username) {
+        return profiles.stream()
+                .filter(p -> p.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public ArrayList<Post> filterPostsByLikes(int minLikes) {
+        return posts.stream()
+                .filter(p -> p.getLikes() >= minLikes)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public ArrayList<Profile> sortProfilesByFollowers() {
+        return profiles.stream()
+                .sorted(Comparator.comparingInt(Profile::getFollowers).reversed())
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void showAllProfiles() {
-        System.out.println("\n--- All Profiles ---");
-        for (Profile p : profiles) {
-            p.display();
-        }
+        profiles.forEach(System.out::println);
     }
 
     public void showAllPosts() {
-        System.out.println("\n--- All Posts ---");
-        for (Post post : posts) {
-            post.display();
-        }
+        posts.forEach(Post::display);
     }
 }
-
